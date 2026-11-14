@@ -4,174 +4,431 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#f4f9fb">
 <title>ALL SERVICES | Admin Panel</title>
+
 <style>
 *{box-sizing:border-box}
-body{margin:0;font-family:Arial,sans-serif;background:#f3f9fb;color:#183044}
+body{
+ margin:0;font-family:Arial,sans-serif;
+ background:#f4f9fb;color:#193447
+}
 button,input{font:inherit}
-.login{min-height:100vh;display:grid;place-items:center;padding:20px}
-.login-card{background:white;padding:30px;border-radius:18px;width:100%;max-width:400px;box-shadow:0 8px 35px #1233}
+button{
+ cursor:pointer;border:0;border-radius:9px;
+ padding:12px 17px;background:#10b5d0;
+ color:white;font-weight:bold
+}
+button:disabled{opacity:.6;cursor:wait}
+.login{
+ min-height:100vh;display:grid;
+ place-items:center;padding:20px
+}
+.login-box{
+ background:white;padding:30px;border-radius:18px;
+ width:100%;max-width:410px;
+ box-shadow:0 10px 35px #18304415
+}
+.brand{
+ color:#08a6c2;font-size:19px;
+ font-weight:800;letter-spacing:2px
+}
 h1{font-size:25px}
-.brand{color:#08a9c5;font-weight:bold;letter-spacing:2px}
-input{width:100%;padding:13px;margin:8px 0 17px;border:1px solid #d8e4e9;border-radius:9px}
-label{font-size:14px;font-weight:bold}
-button{border:0;padding:13px 18px;border-radius:9px;background:#08b6d0;color:white;font-weight:bold;cursor:pointer}
-.login button{width:100%}
-.error{color:#c33;font-size:13px}
+label{
+ display:block;font-weight:bold;
+ font-size:14px;margin-top:17px
+}
+input{
+ width:100%;padding:13px;
+ border:1px solid #dce6eb;
+ border-radius:9px;margin-top:7px
+}
+input:focus{outline:2px solid #10b5d055}
+.full{width:100%;margin-top:22px}
+.error{color:#c33;font-size:13px;min-height:18px}
 #dashboard{display:none}
-.sidebar{position:fixed;width:220px;height:100vh;background:white;padding:22px;border-right:1px solid #ddd}
-.sidebar button{display:block;width:100%;margin-top:12px;text-align:left;background:#e9f9fc;color:#087f99}
-main{margin-left:220px;padding:25px}
-.top{background:white;padding:18px;border-radius:12px;display:flex;justify-content:space-between;align-items:center;gap:10px}
-.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:15px;margin-top:25px}
-.card{background:white;padding:22px;border-radius:13px}
+.sidebar{
+ position:fixed;left:0;top:0;bottom:0;
+ width:225px;background:white;padding:22px;
+ border-right:1px solid #e5edf0
+}
+.sidebar button{
+ display:block;width:100%;margin-top:12px;
+ text-align:left;background:#eaf9fc;color:#087e98
+}
+.sidebar button.active{background:#10b5d0;color:white}
+main{margin-left:225px;padding:25px}
+.top{
+ background:white;padding:18px;border-radius:12px;
+ display:flex;justify-content:space-between;
+ align-items:center;gap:10px
+}
+.stats{
+ display:grid;grid-template-columns:repeat(4,1fr);
+ gap:15px;margin-top:24px
+}
+.card,.panel{background:white;border-radius:13px;padding:20px}
 .card span{color:#718596}
-.card h2{font-size:30px;color:#08a9c5}
-.panel{background:white;padding:22px;margin-top:20px;border-radius:13px}
+.card h2{font-size:29px;color:#0aa9c4}
+.panel{margin-top:20px;overflow-wrap:anywhere}
 .page{display:none}
 .page.active{display:block}
+.muted{color:#718596;font-size:13px}
 @media(max-width:700px){
-.sidebar{position:static;width:100%;height:auto}
-.sidebar button{display:inline-block;width:auto;margin:5px}
-main{margin:0;padding:13px}
-.stats{grid-template-columns:repeat(2,1fr)}
-.top{flex-wrap:wrap}
+ .sidebar{position:static;width:100%;height:auto}
+ .sidebar button{display:inline-block;width:auto;margin:5px}
+ main{margin:0;padding:13px}
+ .stats{grid-template-columns:repeat(2,1fr);gap:9px}
+ .top{gap:10px;flex-wrap:wrap}
+ .card{padding:13px}
+ .card h2{font-size:24px}
 }
 </style>
 </head>
+
 <body>
 
 <div class="login" id="login">
-<form class="login-card" id="loginForm">
+<form class="login-box" id="loginForm">
 <div class="brand">✦ ALL SERVICES</div>
 <h1>Admin Login</h1>
-<p>Sign in to your administrator account.</p>
-<label>Email Address</label>
-<input id="email" type="email" required placeholder="Admin email">
-<label>Password</label>
-<input id="password" type="password" required placeholder="Password">
-<button id="loginBtn">Sign In</button>
-<p class="error" id="error"></p>
+<p class="muted">Welcome to your administration panel.</p>
+
+<label for="email">Email Address</label>
+<input id="email" type="email" required
+autocomplete="username" placeholder="Enter admin email">
+
+<label for="password">Password</label>
+<input id="password" type="password" required
+autocomplete="current-password" placeholder="Enter password">
+
+<button class="full" id="loginBtn" type="submit">
+Sign In
+</button>
+
+<div class="error" id="error" role="alert"></div>
 </form>
 </div>
 
 <div id="dashboard">
+
 <aside class="sidebar">
 <div class="brand">ALL SERVICES</div>
-<button onclick="showPage('home')">Dashboard</button>
-<button onclick="showPage('profiles')">Profiles</button>
-<button onclick="showPage('bookings')">Bookings</button>
-<button onclick="showPage('services')">Services</button>
-<button onclick="showPage('inquiries')">Inquiries</button>
-<button onclick="logout()">Sign Out</button>
+
+<button class="active" data-page="home">Dashboard</button>
+<button data-page="profiles">Profiles</button>
+<button data-page="bookings">Bookings</button>
+<button data-page="services">Services</button>
+<button data-page="inquiries">Inquiries</button>
+
+<button id="logoutBtn">Logout</button>
 </aside>
 
 <main>
-<header class="top">
+
+<div class="top">
 <div>
 <strong>Admin Dashboard</strong>
-<p id="adminEmail"></p>
+<p class="muted" id="adminEmail"></p>
 </div>
-<button onclick="logout()">Logout</button>
-</header>
+<button id="topLogout">Sign Out</button>
+</div>
 
 <section id="home" class="page active">
 <h1>Dashboard Overview</h1>
+
 <div class="stats">
-<div class="card"><span>Profiles</span><h2 id="profilesCount">—</h2></div>
-<div class="card"><span>Bookings</span><h2 id="bookingsCount">—</h2></div>
-<div class="card"><span>Services</span><h2 id="servicesCount">—</h2></div>
-<div class="card"><span>Inquiries</span><h2 id="inquiriesCount">—</h2></div>
+
+<div class="card">
+<span>Profiles</span>
+<h2 id="profilesCount">—</h2>
 </div>
-<div class="panel" id="status">Connecting to database...</div>
+
+<div class="card">
+<span>Bookings</span>
+<h2 id="bookingsCount">—</h2>
+</div>
+
+<div class="card">
+<span>Services</span>
+<h2 id="servicesCount">—</h2>
+</div>
+
+<div class="card">
+<span>Inquiries</span>
+<h2 id="inquiriesCount">—</h2>
+</div>
+
+</div>
+
+<div class="panel">
+<h3>Database Status</h3>
+<p id="status" class="muted">Checking connection...</p>
+<button id="refreshBtn">Refresh Data</button>
+</div>
 </section>
 
-<section id="profiles" class="page"><h1>Profiles</h1><div class="panel" id="profilesData">Loading...</div></section>
-<section id="bookings" class="page"><h1>Bookings</h1><div class="panel" id="bookingsData">Loading...</div></section>
-<section id="services" class="page"><h1>Services</h1><div class="panel" id="servicesData">Loading...</div></section>
-<section id="inquiries" class="page"><h1>Inquiries</h1><div class="panel" id="inquiriesData">Loading...</div></section>
+<section id="profiles" class="page">
+<h1>Profiles</h1>
+<div class="panel" id="profilesData">Loading...</div>
+</section>
+
+<section id="bookings" class="page">
+<h1>Bookings</h1>
+<div class="panel" id="bookingsData">Loading...</div>
+</section>
+
+<section id="services" class="page">
+<h1>Services</h1>
+<div class="panel" id="servicesData">Loading...</div>
+</section>
+
+<section id="inquiries" class="page">
+<h1>Inquiries</h1>
+<div class="panel" id="inquiriesData">Loading...</div>
+</section>
+
 </main>
 </div>
 
 <script type="module">
-import {createClient} from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
 
-const SUPABASE_URL='https://hjkktuoroqkuagdlxvfw.supabase.co';
-const SUPABASE_KEY='PASTE_YOUR_SUPABASE_PUBLISHABLE_KEY_HERE';
+import {createClient}
+from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
 
-const supabase=createClient(SUPABASE_URL,SUPABASE_KEY);
+/* SUPABASE CONFIGURATION */
 
-const $=id=>document.getElementById(id);
+const SUPABASE_URL =
+'https://hjkktuoroqkuagdlxvfw.supabase.co';
 
-async function checkSession(){
-const {data:{session}}=await supabase.auth.getSession();
-if(session) await verifyAdmin(session);
+const SUPABASE_KEY =
+'sb_publishable_ohRibCssZJwJJ1_G1RZczw_qfvYyvjR';
+
+const db = createClient(
+SUPABASE_URL,
+SUPABASE_KEY,
+{
+ auth:{
+  persistSession:true,
+  autoRefreshToken:true,
+  detectSessionInUrl:true
+ }
+}
+);
+
+const $ = id => document.getElementById(id);
+
+let loading = false;
+
+/* LOGIN SCREEN */
+
+function showLogin(message=''){
+
+ $('login').style.display='grid';
+ $('dashboard').style.display='none';
+ $('error').textContent=message;
+
 }
 
-async function verifyAdmin(session){
-if(session.user.app_metadata?.role!=='admin'){
-await supabase.auth.signOut();
-$('error').textContent='Admin access required.';
-$('login').style.display='grid';
-$('dashboard').style.display='none';
-return;
-}
-$('login').style.display='none';
-$('dashboard').style.display='block';
-$('adminEmail').textContent=session.user.email;
-loadCounts();
+/* ADMIN VERIFICATION */
+
+async function enterAdmin(session){
+
+ if(!session){
+  showLogin();
+  return;
+ }
+
+ const role = session.user.app_metadata?.role;
+
+ if(role !== 'admin'){
+
+  await db.auth.signOut();
+
+  showLogin(
+   'Your account is not authorized as an administrator.'
+  );
+
+  return;
+ }
+
+ $('login').style.display='none';
+ $('dashboard').style.display='block';
+
+ $('adminEmail').textContent =
+ session.user.email || 'Administrator';
+
+ await loadDashboard();
+
 }
 
-$('loginForm').addEventListener('submit',async e=>{
-e.preventDefault();
-$('loginBtn').disabled=true;
-$('error').textContent='';
-const {data,error}=await supabase.auth.signInWithPassword({
-email:$('email').value.trim(),
-password:$('password').value
+/* EMAIL + PASSWORD LOGIN */
+
+$('loginForm').addEventListener('submit',async event=>{
+
+ event.preventDefault();
+
+ if(loading)return;
+
+ loading=true;
+
+ $('loginBtn').disabled=true;
+ $('loginBtn').textContent='Signing in...';
+ $('error').textContent='';
+
+ try{
+
+  const {data,error} =
+  await db.auth.signInWithPassword({
+
+   email:$('email').value.trim(),
+   password:$('password').value
+
+  });
+
+  if(error){
+   showLogin(error.message);
+   return;
+  }
+
+  await enterAdmin(data.session);
+
+ }catch(error){
+
+  showLogin('Connection error: '+error.message);
+
+ }finally{
+
+  loading=false;
+  $('loginBtn').disabled=false;
+  $('loginBtn').textContent='Sign In';
+
+ }
+
 });
-$('loginBtn').disabled=false;
-if(error){
-$('error').textContent=error.message;
-return;
+
+/* DATABASE COUNTS */
+
+async function loadDashboard(){
+
+ $('status').textContent='Loading database information...';
+
+ const tables=[
+  'profiles',
+  'bookings',
+  'services',
+  'inquiries'
+ ];
+
+ let success=0;
+ let failed=[];
+
+ for(const table of tables){
+
+  try{
+
+   const {count,error} =
+   await db.from(table).select('*',{
+    count:'exact',
+    head:true
+   });
+
+   if(error)throw error;
+
+   $(table+'Count').textContent=count ?? 0;
+
+   $(table+'Data').textContent =
+   (count ?? 0)+' records found.';
+
+   success++;
+
+  }catch(error){
+
+   $(table+'Count').textContent='—';
+
+   $(table+'Data').textContent =
+   'Unable to load: '+error.message;
+
+   failed.push(table);
+
+  }
+
+ }
+
+ $('status').textContent =
+ failed.length
+ ? 'Some tables could not be accessed: '+failed.join(', ')
+ : 'Connected successfully. All table counts loaded.';
+
 }
-await verifyAdmin(data);
+
+/* NAVIGATION */
+
+document.querySelectorAll('[data-page]').forEach(button=>{
+
+ button.addEventListener('click',()=>{
+
+  document.querySelectorAll('.page').forEach(section=>{
+   section.classList.remove('active');
+  });
+
+  document.querySelectorAll('[data-page]').forEach(item=>{
+   item.classList.remove('active');
+  });
+
+  $(button.dataset.page).classList.add('active');
+  button.classList.add('active');
+
+ });
+
 });
 
-async function loadCounts(){
-const tables=['profiles','bookings','services','inquiries'];
-let failed=[];
-for(const table of tables){
-const {count,error}=await supabase.from(table).select('*',{count:'exact',head:true});
-$(table+'Count').textContent=error?'—':count;
-$(table+'Data').textContent=error?error.message:count+' records found.';
-if(error) failed.push(table);
-}
-$('status').textContent=failed.length?
-'Some tables could not be read: '+failed.join(', '):
-'Database connected successfully.';
+/* REFRESH */
+
+$('refreshBtn').addEventListener('click',loadDashboard);
+
+/* LOGOUT */
+
+async function logout(){
+
+ await db.auth.signOut();
+
+ $('password').value='';
+
+ showLogin('You have signed out successfully.');
+
 }
 
-window.showPage=id=>{
-document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-$(id).classList.add('active');
-};
+$('logoutBtn').addEventListener('click',logout);
+$('topLogout').addEventListener('click',logout);
 
-window.logout=async()=>{
-await supabase.auth.signOut();
-$('dashboard').style.display='none';
-$('login').style.display='grid';
-$('password').value='';
-};
+/* SESSION MANAGEMENT */
 
-supabase.auth.onAuthStateChange((event,session)=>{
-if(event==='SIGNED_OUT'){
-$('dashboard').style.display='none';
-$('login').style.display='grid';
-}
+db.auth.onAuthStateChange((event,session)=>{
+
+ if(event==='SIGNED_OUT'){
+  showLogin();
+ }
+
 });
 
-checkSession();
+try{
+
+ const {data,error}=await db.auth.getSession();
+
+ if(error){
+  showLogin(error.message);
+ }else if(data.session){
+  await enterAdmin(data.session);
+ }
+
+}catch(error){
+
+ showLogin('Unable to restore session. Please sign in again.');
+
+}
+
 </script>
+
 </body>
 </html>
